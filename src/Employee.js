@@ -18,8 +18,25 @@ class Employee extends Component{
             description:'',
             subject:'',
             a:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
-            day:0
+            day:0,
+            color:'white'
         }
+    }
+    componentDidMount(){
+        const db=firebase.firestore();
+        db.collection('request').get().then(
+            (query)=>{
+                let a=[],b=''
+                query.forEach(
+                    (doc)=>{
+                        if(doc.data().name===this.props.location.state)
+                        a=a.concat(doc.data().day);
+                    }
+                )
+                this.setState({arr:a})
+                console.log(a)
+            }
+        )
     }
     changeSubject=(event)=>{
         this.setState({subject:event.target.value})
@@ -38,8 +55,10 @@ class Employee extends Component{
         }
     }
     render(){
+        
         const dashboard=(
             <div style={{marginLeft:'40%'}}>
+                <h1>Calendar</h1>
                 {Array(6).fill(null).map(
                         (item,i)=><p className='sq1'>{
                             Array(5).fill(null).map(

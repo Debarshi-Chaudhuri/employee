@@ -9,6 +9,7 @@ class Login extends Component{
             pass:'',
         }
     }
+    
     changeName=(event)=>{
         this.setState({name:event.target.value})
     }

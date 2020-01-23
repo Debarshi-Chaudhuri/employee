@@ -24,10 +24,10 @@ class Admin extends Component{
         const db=firebase.firestore();
         db.collection('request').get().then(
             (query)=>{
-                let a=[]
+                let a=[],b=''
                 query.forEach(
                     (doc)=>{
-                        a=a.concat(doc.data());
+                        a=a.concat(doc);
                     }
                 )
                 this.setState({arr:a})
@@ -53,6 +53,15 @@ class Admin extends Component{
         {db.collection('database').add({admin:false,name:this.state.name,password:this.state.pass})
         }
     }
+    accepted=(doc)=>{
+        const db=firebase.firestore();
+        console.log(doc.id)
+        db.collection('request').doc(`${doc.id}`).set({accepted:true,pending:false},{merge:true})
+    }
+    rejected=(doc)=>{
+        const db=firebase.firestore();
+        db.collection('request').doc(`${doc.id}`).set({accepted:false,pending:false},{merge:true})
+    }
     render(){
         
         const create=(
@@ -77,11 +86,12 @@ class Admin extends Component{
             <div style={{marginLeft:'20%'}}>
                 <List>
                     {
-                        this.state.arr.map((data)=>{
+                        this.state.arr.map((doc)=>{
                             return(
                                 <div>
-                                    <ListItem onClick >
-                                        <p>Name : {data.name}<br/>Description : {data.description}</p>
+                                    <ListItem  >
+                                        <p style={{width:'50%'}}>Name : {doc.data().name}<br/>Description : {doc.data().description}</p>
+                                        <button onClick={()=>this.accepted(doc)} >&#10003;</button><button onClick={()=>this.rejected(doc)} >&#10005;</button>
                                     </ListItem>
                                     <Divider/>
                                 </div>
